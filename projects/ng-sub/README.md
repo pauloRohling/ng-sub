@@ -8,13 +8,13 @@ After importing the Directive into your Module, you can use it as a structural d
 
 ```html
 <ng-container *ngSub="message$ as message">
-  
+
   <app-message-danger [text]="message"></app-message-danger>
 
   <app-message-light [text]="message"></app-message-light>
 
   <app-message-success [text]="message"></app-message-success>
-  
+
 </ng-container>
 ```
 
@@ -33,4 +33,4 @@ You can also use it with an implicit ``let`` variable to match the Observable ty
 </ng-container>
 ```
 <br>
-Inspired by [Netanael Basal](https://github.com/NetanelBasal)
+Inspired by <a href="https://github.com/NetanelBasal">Netanael Basal</a>

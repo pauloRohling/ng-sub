@@ -33,4 +33,4 @@ You can also use it with an implicit ``let`` variable to match the Observable ty
 </ng-container>
 ```
 <br>
-Inspired by [Netanael Basal](https://github.com/NetanelBasal)
+Inspired by <a href="https://github.com/NetanelBasal">Netanael Basal</a>
