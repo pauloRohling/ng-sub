@@ -1,6 +1,25 @@
 {
-  "name": "ng-sub",
+  "name": "@reactive-wind/ng-sub",
   "version": "0.0.1",
+  "description": "A standalone angular directive to avoid creating multiple subscriptions with AsyncPipe.",
+  "author": {
+    "name": "Paulo Henrique Rohling",
+    "url": "https://github.com/pauloRohling"
+  },
+  "keywords": [
+    "angular",
+    "directive",
+    "subscription",
+    "unsubscribe",
+    "AsyncPipe",
+    "async",
+    "standalone"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pauloRohling/ng-sub"
+  },
+  "license": "MIT",
   "peerDependencies": {
     "@angular/common": "^14.1.0",
     "@angular/core": "^14.1.0"
