@@ -1,6 +1,6 @@
 {
   "name": "ng-sub",
-  "description": "A standalone angular directive to avoid creating multiple subscriptions with AsyncPipe",
+  "description": "A standalone angular directive to avoid creating multiple subscriptions with AsyncPipe.",
   "version": "0.0.0",
   "author": {
     "name": "Paulo Henrique Rohling",
@@ -15,6 +15,10 @@
     "async",
     "standalone"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pauloRohling/ng-sub",
+  },
   "license": "MIT",
   "scripts": {
     "ng": "ng",

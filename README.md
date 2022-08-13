@@ -1,27 +1,38 @@
-# NgSub
+# NgSubDirective
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.1.2.
+This is a **Standalone Angular Directive** to avoid creating multiple subscriptions with AsyncPipe by centralizing the subscription and providing it through template context.
 
-## Development server
+## Usage
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+After importing the Directive into your Module, you can use it as a structural directive, such as ``*ngIf`` or ``*ngFor``, except you don't need to do a ``| async`` in your Observable. You must provide an alias for it as this is how the **next values** will be provided.
 
-## Code scaffolding
+```angular2html
+<ng-container *ngSub="message$ as message">
+  
+  <app-message-danger [text]="message"></app-message-danger>
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+  <app-message-light [text]="message"></app-message-light>
 
-## Build
+  <app-message-success [text]="message"></app-message-success>
+  
+</ng-container>
+```
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+You can also use it with an implicit ``let`` variable to match the Observable type.
 
-## Running unit tests
+```angular2html
+<!-- 'message' will be typed -->
+<ng-container *ngSub="message$; let message">
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+  <app-message-danger [text]="message.error"></app-message-danger>
 
-## Running end-to-end tests
+  <app-message-light [text]="message.description"></app-message-light>
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+  <app-message-success [text]="message.success"></app-message-success>
 
-## Further help
+</ng-container>
+```
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+***
+
+Inspired by [Netanael Basal](https://github.com/NetanelBasal)
