@@ -15,11 +15,8 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - run: npm install
       - run: npm run build
-      - run: pwd
-      - run: ls
-      - run: cd dist/ng-sub
-      - run: pwd
-      - run: ls
-      - run: npm publish --access public
+      - run: |
+          cd dist/ng-sub
+          npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
