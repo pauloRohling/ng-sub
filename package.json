@@ -1,6 +1,21 @@
 {
   "name": "ng-sub",
+  "description": "A standalone angular directive to avoid creating multiple subscriptions with AsyncPipe",
   "version": "0.0.0",
+  "author": {
+    "name": "Paulo Henrique Rohling",
+    "url": "https://github.com/pauloRohling"
+  },
+  "keywords": [
+    "angular",
+    "directive",
+    "subscription",
+    "unsubscribe",
+    "AsyncPipe",
+    "async",
+    "standalone"
+  ],
+  "license": "MIT",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -8,7 +23,6 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
-  "private": true,
   "dependencies": {
     "@angular/animations": "^14.1.0",
     "@angular/common": "^14.1.0",
@@ -23,6 +37,7 @@
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
+    "@angular-devkit/build-angular": "^14.1.2",
     "@angular/cli": "~14.1.2",
     "@angular/compiler-cli": "^14.1.0",
     "@types/jasmine": "~4.0.0",
@@ -32,6 +47,7 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.0.0",
+    "ng-packagr": "^14.1.0",
     "typescript": "~4.7.2"
   }
 }
