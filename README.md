@@ -46,7 +46,7 @@ This directive also supports an array of Subscribable<T>, like the code below. I
 
   <app-message-light [text]="tuple[0].description"></app-message-light>
 
-  <app-message-success [text]="message.success"></app-message-success>
+  <app-message-success [text]="tuple[0].success"></app-message-success>
 
   <app-warning [text]="tuple[1].text"></app-warning>
 
