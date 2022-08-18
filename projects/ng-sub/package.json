@@ -1,6 +1,6 @@
 {
   "name": "@reactive-wind/ng-sub",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "A standalone angular directive to avoid creating multiple subscriptions with AsyncPipe.",
   "author": {
     "name": "Paulo Henrique Rohling",
