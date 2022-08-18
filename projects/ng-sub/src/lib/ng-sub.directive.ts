@@ -1,9 +1,9 @@
 import { ChangeDetectorRef, Directive, Input, OnDestroy, OnInit, TemplateRef, ViewContainerRef } from "@angular/core";
-import { BehaviorSubject, Observable, of, Subject, Subscription } from "rxjs";
+import { combineLatest, of, Subscribable, Subscription } from "rxjs";
 
 export class NgSubContext<T> {
-  public $implicit: T = null!;
-  public ngSub: T = null!;
+  public $implicit: T[] = null!;
+  public ngSub: T[] = null!;
 }
 
 @Directive({
@@ -11,25 +11,26 @@ export class NgSubContext<T> {
   standalone: true,
 })
 export class NgSubDirective<T> implements OnInit, OnDestroy {
-  private subscribable$: Observable<T> | BehaviorSubject<T> | Subject<T>;
+  private subscribable$: Array<Subscribable<T>>;
   private subscription: Subscription;
   private readonly context: NgSubContext<T>;
 
   constructor(private viewContainer: ViewContainerRef, private templateRef: TemplateRef<NgSubContext<T>>, private changeDetector: ChangeDetectorRef) {
-    this.subscribable$ = of({} as T);
+    this.subscribable$ = [ of({} as T) ];
     this.subscription = new Subscription();
     this.context = new NgSubContext<T>();
   }
 
   @Input()
-  set ngSub(inputSubscribable: Observable<T> | BehaviorSubject<T> | Subject<T>) {
-    this.subscribable$ = inputSubscribable;
+  set ngSub(inputSubscribable: Subscribable<T> | Array<Subscribable<T>>) {
+    this.subscribable$ = Array.isArray(inputSubscribable) ? inputSubscribable : [inputSubscribable];
     this.subscription.unsubscribe();
-    this.subscription = this.subscribable$.subscribe((value: T) => {
-      this.context.$implicit = value;
-      this.context.ngSub = value;
-      this.changeDetector.markForCheck();
-    });
+    this.subscription = combineLatest(this.subscribable$)
+      .subscribe((values: any[]) => {
+        this.context.$implicit = values;
+        this.context.ngSub = values;
+        this.changeDetector.markForCheck();
+      });
   }
 
   ngOnInit(): void {
