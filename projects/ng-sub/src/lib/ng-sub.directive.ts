@@ -1,9 +1,9 @@
 import { ChangeDetectorRef, Directive, Input, OnDestroy, OnInit, TemplateRef, ViewContainerRef } from "@angular/core";
-import { combineLatest, of, Subscribable, Subscription } from "rxjs";
+import { BehaviorSubject, combineLatest, map, Observable, of, Subject, Subscription } from "rxjs";
 
 export class NgSubContext<T> {
-  public $implicit: T[] = null!;
-  public ngSub: T[] = null!;
+  public $implicit: T = null!;
+  public ngSub: T = null!;
 }
 
 @Directive({
@@ -11,22 +11,27 @@ export class NgSubContext<T> {
   standalone: true,
 })
 export class NgSubDirective<T> implements OnInit, OnDestroy {
-  private subscribable$: Array<Subscribable<T>>;
+  private subscribable$: Array<Observable<T> | BehaviorSubject<T> | Subject<T>>;
   private subscription: Subscription;
   private readonly context: NgSubContext<T>;
 
-  constructor(private viewContainer: ViewContainerRef, private templateRef: TemplateRef<NgSubContext<T>>, private changeDetector: ChangeDetectorRef) {
+  constructor(private viewContainer: ViewContainerRef, private templateRef: TemplateRef<NgSubContext<T>>,
+              private changeDetector: ChangeDetectorRef) {
     this.subscribable$ = [ of({} as T) ];
     this.subscription = new Subscription();
     this.context = new NgSubContext<T>();
   }
 
   @Input()
-  set ngSub(inputSubscribable: Subscribable<T> | Array<Subscribable<T>>) {
-    this.subscribable$ = Array.isArray(inputSubscribable) ? inputSubscribable : [inputSubscribable];
+  set ngSub(inputSubscribable: Observable<T> | BehaviorSubject<T> | Subject<T> | Array<Observable<T> | BehaviorSubject<T> | Subject<T>>) {
+    const isArray = Array.isArray(inputSubscribable);
+    this.subscribable$ = isArray ? inputSubscribable : [inputSubscribable];
     this.subscription.unsubscribe();
     this.subscription = combineLatest(this.subscribable$)
-      .subscribe((values: any[]) => {
+      .pipe(
+        map((values) => isArray ? values : values[0])
+      )
+      .subscribe((values: any) => {
         this.context.$implicit = values;
         this.context.ngSub = values;
         this.changeDetector.markForCheck();
