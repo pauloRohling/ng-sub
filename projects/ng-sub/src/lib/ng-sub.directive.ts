@@ -17,8 +17,11 @@ export class NgSubDirective<T> implements OnDestroy {
   private subscription: Subscription;
   private readonly context: NgSubContext<T>;
 
-  constructor(private viewContainer: ViewContainerRef, private templateRef: TemplateRef<NgSubContext<T>>,
-              private changeDetector: ChangeDetectorRef) {
+  constructor(
+    private viewContainer: ViewContainerRef,
+    private templateRef: TemplateRef<NgSubContext<T>>,
+    private changeDetector: ChangeDetectorRef
+  ) {
     this.subscribable$ = [of({} as T)];
     this.subscription = new Subscription();
     this.context = new NgSubContext<T>();
@@ -30,9 +33,7 @@ export class NgSubDirective<T> implements OnDestroy {
     this.subscribable$ = isArray ? inputSubscribable : [inputSubscribable];
     this.subscription.unsubscribe();
     this.subscription = combineLatest(this.subscribable$)
-      .pipe(
-        map((values) => isArray ? values : values[0])
-      )
+      .pipe(map((values) => (isArray ? values : values[0])))
       .subscribe((values: any) => {
         this.context.$implicit = values;
         this.context.ngSub = values;
