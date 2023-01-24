@@ -1,9 +1,9 @@
-import { ChangeDetectorRef, Directive, Input, OnDestroy, OnInit, TemplateRef, ViewContainerRef } from "@angular/core";
+import { ChangeDetectorRef, Directive, Input, OnDestroy, TemplateRef, ViewContainerRef } from "@angular/core";
 import { BehaviorSubject, combineLatest, map, Observable, of, Subject, Subscription } from "rxjs";
 
 class NgSubContext<T> {
-  $implicit: T = null!;
-  ngSub: T = null!;
+  $implicit: T = null as any as T;
+  ngSub: T = null as any as T;
 }
 
 type Subscribable<T> = Observable<T> | BehaviorSubject<T> | Subject<T>;
@@ -12,14 +12,14 @@ type Subscribable<T> = Observable<T> | BehaviorSubject<T> | Subject<T>;
   selector: "[ngSub]",
   standalone: true,
 })
-export class NgSubDirective<T> implements OnInit, OnDestroy {
+export class NgSubDirective<T> implements OnDestroy {
   private subscribable$: Array<Subscribable<T>>;
   private subscription: Subscription;
   private readonly context: NgSubContext<T>;
 
   constructor(private viewContainer: ViewContainerRef, private templateRef: TemplateRef<NgSubContext<T>>,
               private changeDetector: ChangeDetectorRef) {
-    this.subscribable$ = [ of({} as T) ];
+    this.subscribable$ = [of({} as T)];
     this.subscription = new Subscription();
     this.context = new NgSubContext<T>();
   }
@@ -46,12 +46,7 @@ export class NgSubDirective<T> implements OnInit, OnDestroy {
     this.changeDetector.markForCheck();
   }
 
-  ngOnInit(): void {
-    this.viewContainer.createEmbeddedView(this.templateRef, this.context);
-  }
-
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
-
 }
