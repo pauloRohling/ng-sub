@@ -1,9 +1,10 @@
-import { ChangeDetectorRef, Directive, Input, OnDestroy, TemplateRef, ViewContainerRef } from "@angular/core";
-import { BehaviorSubject, combineLatest, map, Observable, of, Subject, Subscription } from "rxjs";
+import { ChangeDetectorRef, Directive, inject, Input, OnDestroy, TemplateRef, ViewContainerRef } from "@angular/core";
+import { BehaviorSubject, first, Observable, of, Subject, Subscription } from "rxjs";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 class NgSubContext<T> {
-  $implicit: T = null as any as T;
-  ngSub: T = null as any as T;
+  public $implicit: T = null as any as T;
+  public ngSub: T = null as any as T;
 }
 
 type Subscribable<T> = Observable<T> | BehaviorSubject<T> | Subject<T>;
@@ -13,38 +14,38 @@ type Subscribable<T> = Observable<T> | BehaviorSubject<T> | Subject<T>;
   standalone: true,
 })
 export class NgSubDirective<T> implements OnDestroy {
-  private subscribable$: Array<Subscribable<T>>;
+  private changeDetector = inject(ChangeDetectorRef);
+  private templateRef = inject(TemplateRef<NgSubContext<T>>);
+  private viewContainer = inject(ViewContainerRef);
+
+  private subscribable$: Subscribable<T>;
   private subscription: Subscription;
+  private createTemplate: Subject<unknown>;
   private readonly context: NgSubContext<T>;
 
-  constructor(
-    private viewContainer: ViewContainerRef,
-    private templateRef: TemplateRef<NgSubContext<T>>,
-    private changeDetector: ChangeDetectorRef
-  ) {
-    this.subscribable$ = [of({} as T)];
-    this.subscription = new Subscription();
-    this.context = new NgSubContext<T>();
-  }
-
   @Input()
-  set ngSub(inputSubscribable: Subscribable<T> | Array<Subscribable<T>>) {
-    const isArray = Array.isArray(inputSubscribable);
-    this.subscribable$ = isArray ? inputSubscribable : [inputSubscribable];
-    this.subscription.unsubscribe();
-    this.subscription = combineLatest(this.subscribable$)
-      .pipe(map((values) => (isArray ? values : values[0])))
-      .subscribe((values: any) => {
-        this.context.$implicit = values;
-        this.context.ngSub = values;
-        this.updateView();
+  set ngSub(inputSubscribable: Subscribable<T>) {
+    if (inputSubscribable !== this.subscribable$) {
+      this.subscribable$ = inputSubscribable;
+      this.subscription.unsubscribe();
+      this.subscription = this.subscribable$.subscribe((value: T) => {
+        this.context.$implicit = value;
+        this.context.ngSub = value;
+        this.createTemplate.next(-1);
+        this.changeDetector.markForCheck();
       });
+    }
   }
 
-  private updateView(): void {
-    this.viewContainer.clear();
-    this.viewContainer.createEmbeddedView(this.templateRef, this.context);
-    this.changeDetector.markForCheck();
+  constructor() {
+    this.subscribable$ = of({} as T);
+    this.subscription = new Subscription();
+    this.createTemplate = new Subject<unknown>();
+    this.context = new NgSubContext<T>();
+
+    this.createTemplate.pipe(first(), takeUntilDestroyed()).subscribe(() => {
+      this.viewContainer.createEmbeddedView(this.templateRef, this.context);
+    });
   }
 
   ngOnDestroy(): void {
