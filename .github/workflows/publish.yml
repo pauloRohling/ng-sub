@@ -11,7 +11,7 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - run: |
           npm install
-          ng build ng-sub
+          npm run build
           cd dist/ng-sub
           npm publish --access public
         env:

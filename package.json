@@ -22,10 +22,7 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test",
+    "build": "ng build ng-sub",
     "update:angular": "npx npm-check-updates --upgrade --target \"minor\" --filter \"/@angular.*/\""
   },
   "dependencies": {
