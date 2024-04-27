@@ -22,7 +22,7 @@ To use the `ngSub` directive, follow these steps:
 1. Import the `NgSubDirective` into your Angular component:
 
    ```typescript
-   import { NgModule } from "@angular/core";
+   import { Component } from "@angular/core";
    import { NgSubDirective } from "@reactive-wind/ng-sub";
    import { Observable } from "rxjs";
    
